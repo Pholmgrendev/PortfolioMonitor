@@ -7,6 +7,10 @@ from models.holding import Holding
 from models.price_history import PriceHistory
 from models.portfolio import Portfolio
 
+'''
+Initializes the database with some dummy data.
+Runs some queries to ensure everything is working, then clears out the data it created to leave the database in the same state it was in before running this script.
+'''
 if __name__ == '__main__':
     # Bind the engine to the metadata of the Base class so that the
     # declaratives can be accessed through a DBSession instance
@@ -16,10 +20,10 @@ if __name__ == '__main__':
     session = DBSession()
 
     # Create some tickers
-    aapl = Ticker(symbol='AAPL', exchange='NASDAQ', name='Apple Inc.')
-    goog = Ticker(symbol='GOOG', exchange='NASDAQ', name='Alphabet Inc.')
-    msft = Ticker(symbol='MSFT', exchange='NASDAQ', name='Microsoft Corporation')
-    tsla = Ticker(symbol='TSLA', exchange='NASDAQ', name='Tesla Inc.')
+    aapl = Ticker(symbol='dummy', exchange='NASDAQ', name='Apple Inc.', type='stock')
+    goog = Ticker(symbol='tickers', exchange='NASDAQ', name='Alphabet Inc.', type='stock')
+    msft = Ticker(symbol='nonexistant', exchange='NASDAQ', name='Microsoft Corporation', type='stock')
+    tsla = Ticker(symbol='facimiles', exchange='NASDAQ', name='Tesla Inc.', type='stock')
 
     # Create some quotes
     aapl_quote = Quote(ticker=aapl, price=150.0, volume=1000)
@@ -79,12 +83,17 @@ if __name__ == '__main__':
             for price_history in holding.price_history_list:
                 print(price_history)
     
+    # select all ticker objects that were created in the last minute
+    from datetime import datetime, timedelta
+    last_minute = datetime.now() - timedelta(minutes=1)
+    
+    session.query(Ticker).filter(Ticker.created_at > last_minute).delete()
     # clear out all the tables
-    session.query(PriceHistory).delete()
-    session.query(Holding).delete()
-    session.query(Portfolio).delete()
-    session.query(Quote).delete()
-    session.query(Ticker).delete()
+    session.query(PriceHistory).filter(PriceHistory.created_at > last_minute).delete()
+    session.query(Holding).filter(Holding.created_at > last_minute).delete()
+    session.query(Portfolio).filter(Portfolio.created_at > last_minute).delete()
+    session.query(Quote).filter(Quote.created_at > last_minute).delete()
+    #session.query(Ticker).delete()
     session.commit()
 
     session.close()

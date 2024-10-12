@@ -1,4 +1,4 @@
-from models import Base
+from models import Base, TimestampMixin
 from sqlalchemy import Column, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -11,7 +11,7 @@ This class is a model for the holdings table in the database. It has the followi
 - shares: The number of shares of the stock.
 - value: The value of the stock.
 '''
-class Holding(Base):
+class Holding(Base, TimestampMixin):
     __tablename__ = 'holdings'
 
     id = Column(Integer, primary_key=True)

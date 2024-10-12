@@ -1,4 +1,4 @@
-from models import Base
+from models import Base, TimestampMixin
 from sqlalchemy import Column, Integer, Float
 from sqlalchemy.orm import relationship
 
@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 This class is a model for the portfolios table in the database. It has the following columns:
 - id: The primary key of the table.
 - total_value: The total value of the portfolio.'''
-class Portfolio(Base):
+class Portfolio(Base, TimestampMixin):
     __tablename__ = 'portfolios'
 
     id = Column(Integer, primary_key=True)

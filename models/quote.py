@@ -1,4 +1,4 @@
-from models import Base
+from models import Base, TimestampMixin
 from sqlalchemy import Column, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -9,7 +9,7 @@ This class is a model for the quotes table in the database. It has the following
 - price: The price of the ticker.
 - volume: The volume of the ticker.
 '''
-class Quote(Base):
+class Quote(Base, TimestampMixin):
     __tablename__ = 'quotes'
 
     id = Column(Integer, primary_key=True)

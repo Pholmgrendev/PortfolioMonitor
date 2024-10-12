@@ -1,4 +1,4 @@
-from models import Base
+from models import Base, TimestampMixin
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -15,7 +15,7 @@ This class is a model for the price_history table in the database. It has the fo
 - change: The change in price.
 - change_percent: The percentage change in price.
 '''
-class PriceHistory(Base):
+class PriceHistory(Base, TimestampMixin):
     __tablename__ = 'price_history'
 
     id = Column(Integer, primary_key=True)

@@ -1,9 +1,14 @@
-from sqlalchemy import create_engine
+from sqlalchemy import Column, DateTime, func, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, declarative_mixin
 
 DBSession = scoped_session(sessionmaker())
 Base = declarative_base()
+
+@declarative_mixin
+class TimestampMixin:
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
 
 '''
 This function initializes the SQL database and returns the engine.
