@@ -1,6 +1,6 @@
+from models import db
 from models import Ticker, Quote, HistoricalPrice, Holding, Portfolio
 from data_scraper.webclient import WebClient
-from app import db
 
 client = WebClient()
 
@@ -22,6 +22,7 @@ def scrape_stock_list():
         else:
             new_ticker = Ticker(symbol=stock['symbol'], exchange=stock['exchangeShortName'] or 'N/A', name=stock['name'] or 'N/A', type=stock['type'] or 'N/A')
             session.add(new_ticker)
+    print('Updated Tickers table')
     session.commit()
 
 
@@ -72,3 +73,32 @@ def scrape_price_history(ticker: Ticker, end_date, start_date='2024-01-01'):
             session.add(new_price_history)
 
     session.commit()
+
+
+def startup():
+    print('Checking if we have a portfolio')
+    portfolio = Portfolio.query.first()
+    if not portfolio:
+        print('No portfolio found, creating one...')
+        new_portfolio = Portfolio(name='Main Portfolio')
+        db.session.add(new_portfolio)
+        db.session.commit()
+    else:
+        print('Portfolio found:', portfolio.name)
+    print('Checking if we need to pull tickers')
+    tickers = Ticker.query.all()
+    if len(tickers) > 0:
+        print('Tickers already exist, skipping scrape')
+        return
+    else:
+        print('No tickers found, scraping...')
+        print("This may take a few moments...")
+        scrape_stock_list()
+
+
+def update_portfolio_quotes():
+    print('Updating portfolio quotes')
+    portfolio = Portfolio.query.first()
+    holdings = portfolio.holdings
+    scrape_quotes([holding.ticker.symbol for holding in holdings])
+    print('Quotes updated')

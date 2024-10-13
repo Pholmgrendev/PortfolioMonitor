@@ -1,5 +1,6 @@
 from flask import jsonify, request
-from app import db
+from models import db
+from models import Portfolio, Holding, Ticker, Quote, HistoricalPrice
 import pandas as pd
 import numpy as np
 

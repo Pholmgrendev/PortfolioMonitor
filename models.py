@@ -1,5 +1,7 @@
-from app import db
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
+
+db = SQLAlchemy()
 
 class Ticker(db.Model):
     __tablename__ = 'tickers'
@@ -45,9 +47,10 @@ class Holding(db.Model):
     value = db.Column(db.Float, nullable=False)
 
 
-    def __init__(self, ticker, shares):
+    def __init__(self, ticker, shares, portfolio=None):
         self.ticker = ticker
         self.shares = shares
+        self.portfolio = portfolio
         self.value = shares * ticker.quote.price
 
 
