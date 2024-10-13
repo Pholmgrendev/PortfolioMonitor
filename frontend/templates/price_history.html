@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price History for {{ ticker.symbol }}</title>
+</head>
+<body>
+    <h1>Price History for {{ ticker.symbol }}</h1>
+    <a href="{{ url_for('index') }}">Back to Portfolio</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Open</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Close</th>
+                <th>Volume</th>
+                <th>Change</th>
+                <th>Change Percent</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in price_history %}
+            <tr>
+                <td>{{ entry.date }}</td>
+                <td>${{ "%.2f"|format(entry.open) }}</td>
+                <td>${{ "%.2f"|format(entry.high) }}</td>
+                <td>${{ "%.2f"|format(entry.low) }}</td>
+                <td>${{ "%.2f"|format(entry.close) }}</td>
+                <td>{{ entry.volume }}</td>
+                <td>${{ "%.2f"|format(entry.change) }}</td>
+                <td>{{ "%.2f"|format(entry.change_percent) }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    
+</body>
+</html>

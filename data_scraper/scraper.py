@@ -97,8 +97,9 @@ def startup():
 
 
 def update_portfolio_quotes():
+    session = db.session
     print('Updating portfolio quotes')
-    portfolio = Portfolio.query.first()
+    portfolio = session.query(Portfolio).first()
     holdings = portfolio.holdings
     scrape_quotes([holding.ticker.symbol for holding in holdings])
     print('Quotes updated')

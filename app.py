@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import date
+from dateutil.relativedelta import relativedelta
 from utilities import load_env_from_yaml
 from models import db
 from models import Portfolio, Holding, Ticker, Quote, HistoricalPrice
@@ -79,6 +81,27 @@ def edit_holding(holding_id):
     else:
         flash("Error: Holding not found.", 'error')
     return redirect(url_for('index'))
+
+
+@app.route('/price_history/<int:ticker_id>')
+def price_history(ticker_id):
+    ticker = Ticker.query.get(ticker_id)
+    if not ticker:
+        flash("Error: Ticker not found.", 'error')
+        return redirect(url_for('index'))
+    
+    price_history = HistoricalPrice.query.filter_by(ticker_id=ticker_id).order_by(HistoricalPrice.date.desc()).all()
+    if not price_history:
+        print('No price history found, scraping...')
+        
+        today = date.today()
+        five_years_ago = today - relativedelta(years=5)
+        today_formatted = today.strftime('%Y-%m-%d')
+        five_years_ago_formatted = five_years_ago.strftime('%Y-%m-%d')
+        
+        scrape_price_history(ticker, start_date=five_years_ago_formatted, end_date=today_formatted)
+        price_history = HistoricalPrice.query.filter_by(ticker_id=ticker_id).order_by(HistoricalPrice.date.desc()).all()
+    return render_template('price_history.html', ticker=ticker, price_history=price_history)
 
 
 if __name__ == '__main__':
