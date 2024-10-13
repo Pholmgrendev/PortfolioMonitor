@@ -61,10 +61,4 @@ class WebClient:
     def get_stock_list(self):
         # return json.loads(open('stock_list.json').read())
         return self.get('available-traded/list')
-    
 
-if __name__ == '__main__':
-    client = WebClient(api_key='dummy', base_url='https://financialmodelingprep.com/api/v3')
-    print(client.get_quote(['AAPL', 'GOOG', 'MSFT', 'TSLA']))
-    print(client.get_price_history('AAPL', '2021-01-01', '2021-01-31'))
-    # print(client.get_stock_list())

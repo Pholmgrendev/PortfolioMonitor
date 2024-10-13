@@ -1,21 +1,12 @@
 from data_scraper.scraper import scrape_quotes, scrape_stock_list, scrape_price_history
 from utilities import load_env_from_yaml
-from models import initialize_sql
-from models.ticker import Ticker
-from models.quote import Quote
-from models.price_history import PriceHistory
-from models.holding import Holding
-from models.portfolio import Portfolio
-from data_scraper.webclient import WebClient
-from sqlalchemy.orm import sessionmaker, close_all_sessions
+from models import Ticker, Quote, PriceHistory, Holding, Portfolio
+from frontend.app import db
 
 if __name__ == "__main__":
-    close_all_sessions()
     load_env_from_yaml('env.yml')
-    engine = initialize_sql()
-    Session = sessionmaker(bind=engine)
+    session = db.session
 
-    session = Session()
     # scrape_stock_list()
     tickers = session.query(Ticker).filter_by(type='N/A').all()
     for ticker in tickers:

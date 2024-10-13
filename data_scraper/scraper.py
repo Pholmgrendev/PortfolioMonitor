@@ -1,15 +1,8 @@
-from models import initialize_sql
-from models.ticker import Ticker
-from models.quote import Quote
-from models.price_history import PriceHistory
-from models.holding import Holding
-from models.portfolio import Portfolio
+from models import Ticker, Quote, PriceHistory, Holding, Portfolio
 from data_scraper.webclient import WebClient
-from sqlalchemy.orm import sessionmaker
+from frontend.app import db
 
 client = WebClient()
-engine = initialize_sql()
-Session = sessionmaker(bind=engine)
 
 '''
 Scrapes the tradable stock list from the API.
@@ -18,7 +11,7 @@ Goes through each result and either upadtes the existing ticker or adds a new on
 def scrape_stock_list():
     stock_list = client.get_stock_list()
     print("found", len(stock_list), "stocks")
-    session = Session()
+    session = db.session
         
     for stock in stock_list:
         existing_ticker = session.query(Ticker).filter_by(symbol=stock['symbol']).first()
@@ -31,16 +24,10 @@ def scrape_stock_list():
             session.add(new_ticker)
     session.commit()
 
-    tickers = session.query(Ticker).all()
-    for ticker in tickers[:50]:
-        print(ticker)
-    session.close()
 
 # given a set of symbols, fetches the quote for each symbol and adds it to the database
-def scrape_quotes(symbols, session=None):
-    if not session: 
-        session = Session()
-
+def scrape_quotes(symbols):
+    session = db.session
     
     quotes = client.get_quote(symbols)
     print('found', len(quotes), 'quotes')
@@ -56,14 +43,12 @@ def scrape_quotes(symbols, session=None):
                 new_quote = Quote(ticker=ticker, price=quote['price'], volume=quote['volume'])
                 session.add(new_quote)
     session.commit()
-    session.close()
 
 
 # given a holding, fetches the price history and adds it to the database
-def scrape_price_history(holding: Holding, end_date, start_date='2024-01-01', session=None):
-    if not session:
-        session = Session()
-    
+def scrape_price_history(holding: Holding, end_date, start_date='2024-01-01'):
+    session = db.session
+
     price_history = client.get_price_history(holding.ticker_symbol, start_date, end_date)['historical']
     print('found', len(price_history), 'price history entries')
 
@@ -88,4 +73,3 @@ def scrape_price_history(holding: Holding, end_date, start_date='2024-01-01', se
             session.add(new_price_history)
 
     session.commit()
-    session.close()
