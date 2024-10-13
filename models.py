@@ -42,6 +42,22 @@ class Holding(db.Model):
     shares = db.Column(db.Integer, nullable=False)
     ticker_id = db.Column(db.Integer, db.ForeignKey('tickers.id'), nullable=False)
     portfolio_id = db.Column(db.Integer, db.ForeignKey('portfolios.id'), nullable=True)
+    value = db.Column(db.Float, nullable=False)
+
+
+    def __init__(self, ticker, shares):
+        self.ticker = ticker
+        self.shares = shares
+        self.value = shares * ticker.quote.price
+
+
+    def update_shares(self, new_shares):
+        self.shares = new_shares
+        self.value = self.shares * self.ticker.quote.price
+
+    
+    def update_value(self): 
+        self.value = self.shares * self.ticker.quote.price
 
 
 class Portfolio(db.Model):
@@ -54,3 +70,8 @@ class Portfolio(db.Model):
     @property
     def total_value(self):
         return sum(holding.shares * holding.ticker.quote.price for holding in self.holdings if holding.ticker.quote)
+    
+    # for each holding in the portfolio, print the ticker symbol, the number of shares, and the value of the holding
+    def __str__(self) -> str:
+        return '\n'.join([f'{holding.ticker.symbol}: {holding.shares} shares, value: {holding.value}' for holding in self.holdings])
+    
