@@ -21,3 +21,6 @@ class Ticker(Base, TimestampMixin):
         self.exchange = exchange
         self.name = name
         self.type = type
+
+    def __str__(self):
+        return f"{self.symbol} - {self.name} ({self.exchange})"

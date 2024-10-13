@@ -1,0 +1,122 @@
+[
+    {
+      "symbol": "ACR.AX",
+      "name": "Acrux Limited",
+      "price": 0.058,
+      "exchange": "Australian Securities Exchange",
+      "exchangeShortName": "ASX",
+      "type": "stock"
+    },
+    {
+      "symbol": "911622.TW",
+      "name": "Tycoons Worldwide Group (Thailand) Public Company Limited",
+      "price": 5.55,
+      "exchange": "Taiwan",
+      "exchangeShortName": "TAI",
+      "type": "stock"
+    },
+    {
+      "symbol": "7525.T",
+      "name": "Rix Corporation",
+      "price": 2845,
+      "exchange": "Tokyo",
+      "exchangeShortName": "JPX",
+      "type": "stock"
+    },
+    {
+      "symbol": "AGT.WA",
+      "name": "Agroton Public Limited",
+      "price": 3.6,
+      "exchange": "Warsaw Stock Exchange",
+      "exchangeShortName": "WSE",
+      "type": "stock"
+    },
+    {
+      "symbol": "S247.L",
+      "name": "Smarttech247 Group plc",
+      "price": 11.3723,
+      "exchange": "London Stock Exchange",
+      "exchangeShortName": "LSE",
+      "type": "stock"
+    },
+    {
+      "symbol": "6615.TWO",
+      "name": "Sofiva Genomics Co.,Ltd.",
+      "price": 47.2,
+      "exchange": "Taipei Exchange",
+      "exchangeShortName": "TWO",
+      "type": "stock"
+    },
+    {
+      "symbol": "MCB.TO",
+      "name": "McCoy Global Inc.",
+      "price": 3,
+      "exchange": "Toronto Stock Exchange",
+      "exchangeShortName": "TSX",
+      "type": "stock"
+    },
+    {
+      "symbol": "BDMS-R.BK",
+      "name": "Bangkok Dusit Medical Services Public Company Limited",
+      "price": 28.75,
+      "exchange": "Thailand",
+      "exchangeShortName": "SET",
+      "type": "stock"
+    },
+    {
+      "symbol": "MAU.AX",
+      "name": "Magnetic Resources NL",
+      "price": 1.305,
+      "exchange": "Australian Securities Exchange",
+      "exchangeShortName": "ASX",
+      "type": "stock"
+    },
+    {
+      "symbol": "VIDGX",
+      "name": "Vanguard Whitehall Funds - Vanguard International Dividend Growth Fund",
+      "price": 11.54,
+      "exchange": "Nasdaq",
+      "exchangeShortName": "NASDAQ",
+      "type": "trust"
+    },
+    {
+      "symbol": "APLP.TA",
+      "name": "Apollo Power Ltd",
+      "price": 464,
+      "exchange": "Tel Aviv",
+      "exchangeShortName": "TLV",
+      "type": "stock"
+    },
+    {
+      "symbol": "4131.TWO",
+      "name": "NeoCore Technology Co., Ltd.",
+      "price": 29.5,
+      "exchange": "Taipei Exchange",
+      "exchangeShortName": "TWO",
+      "type": "stock"
+    },
+    {
+      "symbol": "IT.BK",
+      "name": "IT City Public Company Limited",
+      "price": 5.2,
+      "exchange": "Thailand",
+      "exchangeShortName": "SET",
+      "type": "stock"
+    },
+    {
+      "symbol": "688062.SS",
+      "name": "Mabwell (Shanghai) Bioscience Co., Ltd.",
+      "price": 25.12,
+      "exchange": "Shanghai",
+      "exchangeShortName": "SHH",
+      "type": "stock"
+    },
+    {
+      "symbol": "BMEB4.SA",
+      "name": "Banco Mercantil do Brasil S.A.",
+      "price": 39.58,
+      "exchange": "São Paulo",
+      "exchangeShortName": "SAO",
+      "type": "stock"
+    }
+]

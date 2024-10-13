@@ -1,5 +1,6 @@
 import requests
 import os
+import json
 
 # a web client for scraping the financial api data
 class WebClient:
@@ -12,7 +13,7 @@ class WebClient:
             self.api_key = os.getenv('API_KEY')
         
         if self.api_url is None:
-            self.api_url = os.getenv('API_URL')
+            self.api_url = os.getenv('API_BASE_URL')
         
         if self.api_key is None:
             raise ValueError('API key is not set')
@@ -52,17 +53,18 @@ class WebClient:
         elif start_date is None:
             raise ValueError('No start date provided')
         elif end_date is None:
-            raise ValueError('No end date provided')
+            end_date = '2024-10-12'
         
         return self.get(f"historical-price-full/{symbol}", {'from': start_date, 'to': end_date})
 
 
     def get_stock_list(self):
+        # return json.loads(open('stock_list.json').read())
         return self.get('available-traded/list')
     
 
 if __name__ == '__main__':
-    client = WebClient(base_url='https://financialmodelingprep.com/api/v3')
+    client = WebClient(api_key='dummy', base_url='https://financialmodelingprep.com/api/v3')
     print(client.get_quote(['AAPL', 'GOOG', 'MSFT', 'TSLA']))
     print(client.get_price_history('AAPL', '2021-01-01', '2021-01-31'))
     # print(client.get_stock_list())

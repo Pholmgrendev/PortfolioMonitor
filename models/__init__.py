@@ -17,8 +17,10 @@ Created it by following these instructions:
 https://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/database/sqlalchemy.html#importing-all-sqlalchemy-models
 '''
 def initialize_sql():
+    print('doing some initialization')
     engine = create_engine('sqlite:///portfolio_monitor.db')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
     Base.metadata.create_all(engine)
+    print("done with initialization")
     return engine
