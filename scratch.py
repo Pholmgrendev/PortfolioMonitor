@@ -1,7 +1,7 @@
 from data_scraper.scraper import scrape_quotes, scrape_stock_list, scrape_price_history
 from utilities import load_env_from_yaml
 from models import Ticker, Quote, PriceHistory, Holding, Portfolio
-from frontend.app import db
+from app import db
 
 if __name__ == "__main__":
     load_env_from_yaml('env.yml')

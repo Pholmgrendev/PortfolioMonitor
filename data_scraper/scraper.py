@@ -1,6 +1,6 @@
-from models import Ticker, Quote, PriceHistory, Holding, Portfolio
+from models import Ticker, Quote, HistoricalPrice, Holding, Portfolio
 from data_scraper.webclient import WebClient
-from frontend.app import db
+from app import db
 
 client = WebClient()
 
@@ -46,15 +46,15 @@ def scrape_quotes(symbols):
 
 
 # given a holding, fetches the price history and adds it to the database
-def scrape_price_history(holding: Holding, end_date, start_date='2024-01-01'):
+def scrape_price_history(ticker: Ticker, end_date, start_date='2024-01-01'):
     session = db.session
 
-    price_history = client.get_price_history(holding.ticker_symbol, start_date, end_date)['historical']
+    price_history = client.get_price_history(ticker.symbol, start_date, end_date)['historical']
     print('found', len(price_history), 'price history entries')
 
     # check if we have matching price history entries. Update if we do, add new ones if we don't
     for entry in price_history:
-        existing_price_history = session.query(PriceHistory).filter_by(holding=holding, date=entry['date']).first()
+        existing_price_history = session.query(HistoricalPrice).filter_by(ticker=ticker, date=entry['date']).first()
         if existing_price_history:
             existing_price_history.open = entry['open']
             existing_price_history.high = entry['high']
@@ -64,12 +64,11 @@ def scrape_price_history(holding: Holding, end_date, start_date='2024-01-01'):
             existing_price_history.change = entry['change']
             existing_price_history.change_percent = entry['changePercent']
         else:
-            new_price_history = PriceHistory(symbol=holding.ticker_symbol, date=entry['date'],
-                                            open=entry['open'], high=entry['high'], 
-                                            low=entry['low'], close=entry['close'], 
-                                            volume=entry['volume'], change=entry['change'], 
-                                            change_percent=entry['changePercent'])
-            new_price_history.holding = holding
+            new_price_history = HistoricalPrice(ticker=ticker, date=entry['date'], 
+                                                open=entry['open'], high=entry['high'], 
+                                                low=entry['low'], close=entry['close'], 
+                                                volume=entry['volume'], change=entry['change'], 
+                                                change_percent=entry['changePercent'])
             session.add(new_price_history)
 
     session.commit()
