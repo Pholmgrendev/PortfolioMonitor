@@ -3,9 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from plotly.subplots import make_subplots
+import plotly.graph_objs as go
+
 from utilities import load_env_from_yaml
 from models import db
 from models import Portfolio, Holding, Ticker, Quote, HistoricalPrice
+from data_analyzer.analyzer import analyze_portfolio
 from data_scraper.scraper import scrape_stock_list, scrape_quotes, scrape_price_history
 from data_scraper.scraper import startup, update_portfolio_quotes
 
@@ -26,6 +30,9 @@ scheduler.add_job(func=scrape_stock_list, trigger='interval', minutes=60)
 scheduler.add_job(func=update_portfolio_quotes, trigger='interval', minutes=30)
 scheduler.start()
 
+# initialize some of our DB tables
+with app.app_context():
+    startup()
 
 @app.route('/')
 def index():
@@ -47,6 +54,8 @@ def add_holding():
             return redirect(url_for('index'))
         if not ticker.quote:
             scrape_quotes([symbol])
+        if not ticker.historical_prices:
+            populate_price_history(ticker)
         try:
             holding = Holding(ticker=ticker, shares=shares, portfolio=portfolio)
             db.session.add(holding)
@@ -93,20 +102,34 @@ def price_history(ticker_id):
     price_history = HistoricalPrice.query.filter_by(ticker_id=ticker_id).order_by(HistoricalPrice.date.desc()).all()
     if not price_history:
         print('No price history found, scraping...')
+
+        price_history = populate_price_history(ticker_id)
         
-        today = date.today()
-        five_years_ago = today - relativedelta(years=5)
-        today_formatted = today.strftime('%Y-%m-%d')
-        five_years_ago_formatted = five_years_ago.strftime('%Y-%m-%d')
-        
-        scrape_price_history(ticker, start_date=five_years_ago_formatted, end_date=today_formatted)
-        price_history = HistoricalPrice.query.filter_by(ticker_id=ticker_id).order_by(HistoricalPrice.date.desc()).all()
     return render_template('price_history.html', ticker=ticker, price_history=price_history)
 
 
+@app.route('/advanced_stats')
+def advanced_stats():
+    stats = analyze_portfolio()
+
+    fig = make_subplots(rows=1, cols=1)
+    fig.add_trace(go.Scatter(x=stats['dates'], y=stats['cumulative_returns'], mode='lines', name='Cumulative Returns'))
+    graph_html = fig.to_html(full_html=False)
+    return render_template('advanced_stats.html', stats=stats, graph_html=graph_html)
+
+
+def populate_price_history(ticker):
+    today = date.today()
+    five_years_ago = today - relativedelta(years=5)
+    today_formatted = today.strftime('%Y-%m-%d')
+    five_years_ago_formatted = five_years_ago.strftime('%Y-%m-%d')
+        
+    scrape_price_history(ticker, start_date=five_years_ago_formatted, end_date=today_formatted)
+    price_history = HistoricalPrice.query.filter_by(ticker_id=ticker.id).order_by(HistoricalPrice.date.desc()).all()
+    return price_history
+
+
 if __name__ == '__main__':
-    with app.app_context():
-        startup()
     app.run(debug=True)
     
     
